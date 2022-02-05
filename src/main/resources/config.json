@@ -1,0 +1,232 @@
+{
+  "allCommands": [
+    {
+      "_comment": "Converted to tags. Verbose listing only. Absent `args` property treated as single argument. Commands without arguments should have agrs=null",
+      "type": "FORMAT",
+      "commands": [
+        {
+          "name": "book",
+          "tag": "b0"
+        },
+        {
+          "name": "centering",
+          "tag": "c1",
+          "args": null
+        },
+        {
+          "name": "emph",
+          "tag": "e1"
+        },
+        {
+          "name": "footnote",
+          "tag": "f",
+          "args": [
+            {
+              "translate": true,
+              "external": true
+            }
+          ]
+        },
+        {
+          "name": "footnotemark",
+          "tag": "f0",
+          "args": null
+        },
+        {
+          "name": "Huge",
+          "tag": "sz10",
+          "args": null
+        },
+        {
+          "name": "huge",
+          "tag": "sz9",
+          "args": null
+        },
+        {
+          "name": "LARGE",
+          "tag": "sz8",
+          "args": null
+        },
+        {
+          "name": "Large",
+          "tag": "sz7",
+          "args": null
+        },
+        {
+          "name": "large",
+          "tag": "sz6",
+          "args": null
+        },
+
+        {
+          "name": "normalsize",
+          "tag": "sz5",
+          "args": null
+        },
+        {
+          "name": "small",
+          "tag": "sz4",
+          "args": null
+        },
+
+        {
+          "name": "footnotesize",
+          "tag": "sz3",
+          "args": null
+        },
+        {
+          "name": "scriptsize",
+          "tag": "sz2",
+          "args": null
+        },
+        {
+          "name": "tiny",
+          "tag": "sz1",
+          "args": null
+        },
+        {
+          "name": "href",
+          "tag": "h",
+          "args": [
+            {
+              "translate": true,
+              "external": true,
+              "escape": false
+            },
+            {
+              "translate": true
+            }
+          ]
+        },
+        {
+          "name": "item",
+          "tag": "i2",
+          "args": null
+        },
+        {
+          "name": "noindent",
+          "tag": "n1",
+          "args": null
+        },
+        {
+          "name": "protect",
+          "tag": "p0",
+          "args": null
+        },
+        {
+          "name": "textasciitilde",
+          "tag": "t0",
+          "args": null
+        },
+        {
+          "name": "textbf",
+          "tag": "b1"
+        },
+        {
+          "name": "textit",
+          "tag": "i1"
+        },
+        {
+          "name": "textsubscript",
+          "tag": "s1"
+        },
+        {
+          "name": "textsuperscript",
+          "tag": "s2"
+        },
+        {
+          "name": "uline",
+          "tag": "u1"
+        },
+        {
+          "name": "url",
+          "tag": "url",
+          "args": [
+            {
+              "translate": true,
+              "external": true,
+              "escape": false
+            }
+          ]
+        },
+        {
+          "name": "verb",
+          "tag": "verb",
+          "args": [
+            {
+              "translate": true,
+              "external": true,
+              "escape": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_comment": "Compact listing assumes single translatable argument. Options are copied as is.",
+      "type": "CONTENT",
+      "commands": [
+        "caption",
+        "cehead",
+        "chapter",
+        "cohead",
+        "footnotetext",
+        "section",
+        "subsection",
+        {
+          "name": "addcontentsline",
+          "args": [{"translate": false}, {"translate": false}, {"translate": true}]
+        },
+        {
+          "name": "multicolumn",
+          "args": [{"translate": false}, {"translate": false}, {"translate": true}]
+        },
+        {
+          "name": "multirow",
+          "args": [{"translate": false}, {"translate": false}, {"translate": true}]
+        }
+      ]
+    },
+    {
+      "_comment": "Excluded from translation. All options and arguments are copied as is.",
+      "type": "CONTROL",
+      "commands": [
+        "addtocounter",
+        "bigskip",
+        "captionsetup",
+        "cleardoublepage",
+        "clearpage",
+        "else",
+        "endfirsthead",
+        "endfoot",
+        "endhead",
+        "endinput",
+        "endlastfoot",
+        "fi",
+        "if",
+        "includegraphics",
+        "label",
+        "newpage",
+        "hline",
+        "ohead",
+        "pagebreak",
+        "pagemark",
+        "pagenumbering",
+        "par",
+        "raggedleft",
+        "raggedright",
+        "ref",
+        "setcounter",
+        "stepcounter",
+        "textwidth",
+        "thispagestyle",
+        "vspace"
+      ]
+    }
+  ],
+  "environments": {
+    "consumeOptions": ["figure", "table", "longtable"],
+    "consumeArguments": ["wrapfigure", "tabular", "tabularx", "longtable"],
+    "table": ["tabular", "tabularx", "longtable"]
+  }
+}

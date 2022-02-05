@@ -1,0 +1,60 @@
+\pagenumbering{roman}
+
+Hello, world!
+
+Example of \textbf{bold} and \emph{emphasis}.
+
+\chapter{Down the rabbit hole}
+
+Example of closed tag \emph and {virtual group command}.
+
+Let's try a footnote with a hyperlink inside\footnote{\emph{See:} \href{https://wikipedia.org}{Wikipedia}}
+
+We can split \emph{tag pairs between segments.
+
+And it should work} as expected\footnote{Another footnote for tag numbering check.}.
+
+Here is an \unknown{unknown command}.
+
+Next \neverseenit{unknown command}{should}{receive} next numbered tag.
+
+Now let's make empty footnote \footnote{} and emphasis \emph{}
+
+\footnote{External content\par with control\par\\sequence.}
+
+A tag \textbf{\uline{at the beginning}} a of parent tag.
+
+\begin{bar}\begin{foo}Testing environments\end{foo}\end{bar}
+
+% Whole line comment
+
+You should see only this% but not that
+
+\begin{figure}[foo=bar]Option consumer example\end{figure}
+
+\begin{wrapfigure}{123}{boo}Argument consumer example\end{wrapfigure}
+
+Let's test escaping: \% \$ \_ \# \& \{ \} `~` \~{}
+
+URL with escaped characters \url{http://foo.bar?a=1&b=%20%40}
+
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+    \hline
+    \multicolumn{4}{|c|}{Country List} \\
+    \hline
+    Country Name or Area Name & ISO ALPHA 2 Code &ISO ALPHA 3 Code & ISO numeric Code\\
+    \hline
+    Afghanistan & AF & AFG & 004 \\ [1ex]
+    \hline
+\end{tabular}
+
+Inline math types: \(E=mc^2\), $E=mc^2$, \begin{math}E=mc^2\end{math}.
+
+%Display math flavors
+\[E=mc^2\] \begin{displaymath}E=mc^2\end{displaymath} \begin{equation}E=mc^2\end{equation}
+
+% verb and url behind a comment \verb!something! and \url{http://site.com/?a=%0203}
+
+\begin{verbatim}This is verbatim \emph{text} % Not a comment \verb+HERE+\end{verbatim}
+
+A `verb` command test: \verb+This~is~unescaped+

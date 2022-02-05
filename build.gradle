@@ -1,0 +1,133 @@
+plugins {
+    id 'java'
+    id "com.github.spotbugs" version "5.0.0-beta.2"
+    id 'checkstyle'
+    id 'distribution'
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    fat
+}
+
+dependencies {
+    implementation 'org.omegat:omegat:5.6.0'
+    implementation 'commons-io:commons-io:2.4'
+    implementation 'commons-lang:commons-lang:2.6'
+    implementation 'org.netbeans.api:org-openide-awt:RELEASE125'
+    implementation "com.fasterxml.jackson.core:jackson-core:2.12.3"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.12.3"
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'xmlunit:xmlunit:1.6'
+    testImplementation 'org.madlonkay.supertmxmerge:supertmxmerge:2.0.1'
+
+    fat "com.fasterxml.jackson.core:jackson-core:2.12.3"
+    fat "com.fasterxml.jackson.core:jackson-databind:2.12.3"
+}
+
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+}
+
+jar {
+    manifest {
+        // plugin's main class name is defined in gradle.properties file.
+        attributes(
+            "OmegaT-Plugins": pluginMainClass,
+            "Plugin-Version": pluginVersion,
+            "Plugin-Name": pluginName,
+            "Plugin-Author": pluginAuthor,
+            "Plugin-Description": pluginDescription
+        )
+    }
+
+    archiveFileName = "${rootProject.name}-${pluginVersion}.jar"
+}
+
+// Intended for OmegaT without Jackson (up to version 5.7)
+task fatJar(type: Jar) {
+    manifest {
+        attributes(
+            "OmegaT-Plugins": pluginMainClass,
+            "Plugin-Version": pluginVersion,
+            "Plugin-Name": pluginName,
+            "Plugin-Author": pluginAuthor,
+            "Plugin-Description": pluginDescription
+        )
+    }
+
+    archiveFileName = "${rootProject.name}-fat-${pluginVersion}.jar"
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from { configurations.fat.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+/* Checkstyle */
+tasks.checkstyleMain.setGroup('Verification')
+tasks.checkstyleTest.setEnabled(false)
+
+/* SpotBugs */
+spotbugs {
+    ignoreFailures = true
+}
+
+spotbugsMain {
+    reports {
+        html {
+            enabled = true
+            destination = file("$buildDir/reports/spotbugs/main/spotbugs.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
+    }
+}
+tasks.spotbugsTest.setEnabled(false)
+
+
+artifacts {
+    archives jar
+}
+
+distZip {
+    archiveFileName = "${rootProject.name}-${pluginVersion}.zip"
+}
+
+distTar {
+    compression = Compression.GZIP
+}
+
+
+distributions {
+    main {
+        contents {
+            from('README.md', 'CONFIGURATION.md', 'COPYING')
+            from('util') {
+                into 'util'
+            }
+
+            from(jar) {
+                into 'plugin'
+            }
+        }
+    }
+
+    fat {
+        contents {
+            from('README.md', 'CONFIGURATION.md', 'COPYING')
+            from('util') {
+                into 'util'
+            }
+            from(fatJar) {
+                into 'plugin'
+            }
+        }
+    }
+}
+
+fatDistZip {
+    archiveFileName = "${rootProject.name}-fat-${pluginVersion}.zip"
+}
