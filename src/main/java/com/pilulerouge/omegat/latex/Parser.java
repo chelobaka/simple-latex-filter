@@ -35,6 +35,7 @@ public class Parser {
     private List<String> currentEnvironments;
     private int lastTagId; // New tags get ID from this one
     private boolean maskingTokens;
+    private TokenType prevTokenType;
 
     public Parser(CommandCenter cc) {
         commandCenter = cc;
@@ -42,6 +43,7 @@ public class Parser {
         lastTagId = 0;
         maskingTokens = false;
         environments = new LinkedList<>();
+        prevTokenType = null;
     }
 
     public void reset() {
@@ -51,6 +53,7 @@ public class Parser {
         levels.add(new ParserLevel(true, 0, true)); // Root level
         environments.clear();
         currentEnvironments = Collections.emptyList();
+        prevTokenType = null;
     }
 
     public void processToken(Token token) {
@@ -94,8 +97,21 @@ public class Parser {
                     tokenTranslatable = false;
                     break;
                 }
+                // Handle command options
+                if (prevTokenType == TokenType.COMMAND) {
+                    command = currentLevel.getCommand(); // Shouldn't fail I guess
+                    CommandType ct = command.getType();
+                    if (ct == CommandType.FORMAT) {
+                        tagId = currentLevel.getTagId();
+                    } else {
+                        tokenTranslatable = false;
+                    }
+                    break;
+                }
+                // Table row hints like [1ex]
                 if (!environments.isEmpty() && commandCenter.isTableEnvironment(environments.getLast())) {
                     tokenTranslatable = false;
+                    break;
                 }
                 break;
             case GROUP_BEGIN:
@@ -117,7 +133,7 @@ public class Parser {
                     if (currentLevel.getCommand().getType() != CommandType.FORMAT) {
                         tokenTranslatable = false;
                     }
-                } else if (newLevelTranslatable) {  // Create virtual group command on unexpected group begin
+                } else if (newLevelTranslatable) {  // Create virtual group command on orphan group begin
                     token.setName(GROUP_COMMAND_NAME);
                     currentLevel.registerCommand(commandCenter.getGroupCommand());
                     currentLevel.fetchArgument(); // Remove argument right away
@@ -212,6 +228,9 @@ public class Parser {
 
         // Mark this token
         token.addParserMark(tokenTranslatable, currentExternality, tagId, tokenEscapeContent, currentEnvironments);
+
+        // Remember token type for next iteration
+        prevTokenType = tt;
     }
 
     private void addLevel(final boolean translatable, final int externality, final boolean escape) {

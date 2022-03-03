@@ -38,7 +38,7 @@ Let's test escaping: \% \$ \_ \# \& \{ \} `~` \~{}
 
 URL with escaped characters \url{http://foo.bar?a=1&b=%20%40}
 
-\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+\begin{tabular}[c]{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
     \hline
     \multicolumn{4}{|c|}{Country List} \\
     \hline
@@ -58,3 +58,5 @@ Inline math types: \(E=mc^2\), $E=mc^2$, \begin{math}E=mc^2\end{math}.
 \begin{verbatim}This is verbatim \emph{text} % Not a comment \verb+HERE+\end{verbatim}
 
 A `verb` command test: \verb+This~is~unescaped+
+
+A \textls[10]{slight} and \textls[100]{heavy} letterspaced text.

@@ -62,7 +62,8 @@ public class Command {
         this.hasPlainArgument = Arrays.stream(args).anyMatch(a -> a.isTranslatable() && !a.isExternal());
         this.numberedTags = (type == CommandType.FORMAT &&
                 Arrays.stream(args).anyMatch(CommandArgument::isExternal)) ||
-                EXPLICIT_NUMBERED_TAG_COMMANDS.contains(name);
+                EXPLICIT_NUMBERED_TAG_COMMANDS.contains(name) ||
+                (tag != null && tag.matches("[A-Za-z]+"));
      }
 
     public CommandType getType() {

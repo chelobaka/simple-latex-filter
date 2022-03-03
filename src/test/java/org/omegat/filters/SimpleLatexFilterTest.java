@@ -75,6 +75,7 @@ public class SimpleLatexFilterTest extends TestFilterBase {
         assertEquals("This is verbatim \\emph{text} % Not a comment \\verb+HERE+", entries.get(i++));
         assertEquals("A `verb` command test: <verb1/>", entries.get(i++));
         assertEquals("This~is~unescaped", entries.get(i++));
+        assertEquals("A <ls1>slight</ls1> and <ls2>heavy</ls2> letterspaced text.", entries.get(i++));
     }
 
     @Test
