@@ -50,13 +50,13 @@ public class Parser {
         lastTagId = 0;
         maskingTokens = false;
         levels.clear();
-        levels.add(new ParserLevel(true, 0, true)); // Root level
+        levels.add(new ParserLevel(true, 0, true, false)); // Root level
         environments.clear();
         currentEnvironments = Collections.emptyList();
         prevTokenType = null;
     }
 
-    public void processToken(Token token) {
+    public void processToken(final Token token) {
 
         Command command;
         int tagId = 0;
@@ -75,6 +75,9 @@ public class Parser {
 
         switch (tt) {
             case COMMAND:
+                if (currentLevel.isHidden()) {
+                    break;
+                }
                 command = commandCenter.getCommand(token.getName());
                 currentLevel.registerCommand(command);
                 if (command.getType() == CommandType.FORMAT) {
@@ -88,10 +91,16 @@ public class Parser {
                 }
                 break;
             case INLINE_MATH:
+                if (currentLevel.isHidden()) {
+                    break;
+                }
                 token.setName(INLINE_MATH_COMMAND_NAME);
                 tagId = ++lastTagId;
                 break;
             case OPTIONS:
+                if (currentLevel.isHidden()) {
+                    break;
+                }
                 if (currentLevel.isOptionsConsumer()) {
                     currentLevel.setOptionsConsumer(false);
                     tokenTranslatable = false;
@@ -118,14 +127,18 @@ public class Parser {
                 boolean newLevelTranslatable = currentLevel.isTranslatable() && !currentLevel.isArgumentConsumer();
                 boolean newLevelEscapeContent = currentLevel.doEscape();
                 int newLevelExternality = currentExternality;
+                boolean newLevelIsHidden = currentLevel.isHidden();
 
-                if (currentLevel.hasArgumentsInQueue()) {
+                if (currentLevel.hasArgumentsInQueue() && !newLevelIsHidden) {
                     tagId = currentLevel.getTagId();
                     CommandArgument currentArg = currentLevel.fetchArgument();
-                    newLevelTranslatable = currentArg.isTranslatable() && newLevelTranslatable;
-                    newLevelEscapeContent = currentArg.doEscape();
+                    // Flag for non-translatable argument of FORMAT command
+                    newLevelIsHidden = (!currentArg.isTranslatable() &&
+                            currentLevel.getCommand().getType() == CommandType.FORMAT);
+                    newLevelTranslatable = (currentArg.isTranslatable() && newLevelTranslatable) || newLevelIsHidden;
+                    newLevelEscapeContent = currentArg.doEscape() && !newLevelIsHidden;
 
-                    if (currentArg.isExternal() && newLevelTranslatable) {
+                    if (currentArg.isExternal() && newLevelTranslatable && !newLevelIsHidden) {
                         newLevelExternality += 1;
                     }
 
@@ -133,7 +146,8 @@ public class Parser {
                     if (currentLevel.getCommand().getType() != CommandType.FORMAT) {
                         tokenTranslatable = false;
                     }
-                } else if (newLevelTranslatable) {  // Create virtual group command on orphan group begin
+                // Create virtual group command on orphan group begin
+                } else if (newLevelTranslatable && !newLevelIsHidden) {
                     token.setName(GROUP_COMMAND_NAME);
                     currentLevel.registerCommand(commandCenter.getGroupCommand());
                     currentLevel.fetchArgument(); // Remove argument right away
@@ -142,7 +156,12 @@ public class Parser {
                 } else if (currentLevel.isArgumentConsumer()) {
                     tokenTranslatable = false;
                 }
-                addLevel(newLevelTranslatable, newLevelExternality, newLevelEscapeContent);
+                addLevel(newLevelTranslatable, newLevelExternality, newLevelEscapeContent, newLevelIsHidden);
+                // Inherit tagId for hidden levels
+                if (newLevelIsHidden) {
+                    ParserLevel newLevel = getCurrentLevel();
+                    newLevel.setTagId(currentLevel.getTagId());
+                }
                 break;
             case GROUP_END:
                 if (!onRootLevel()) {
@@ -226,6 +245,14 @@ public class Parser {
             maskingTokens = false;
         }
 
+        // Override properties for hidden tokens
+        currentLevel = getCurrentLevel();
+        if (currentLevel.isHidden()) {
+            tagId = currentLevel.getTagId();
+            tokenTranslatable = true;
+            tokenEscapeContent = false;
+        }
+
         // Mark this token
         token.addParserMark(tokenTranslatable, currentExternality, tagId, tokenEscapeContent, currentEnvironments);
 
@@ -233,8 +260,8 @@ public class Parser {
         prevTokenType = tt;
     }
 
-    private void addLevel(final boolean translatable, final int externality, final boolean escape) {
-        levels.addLast(new ParserLevel(translatable, externality, escape));
+    private void addLevel(final boolean translatable, final int externality, final boolean escape, final boolean hidden) {
+        levels.addLast(new ParserLevel(translatable, externality, escape, hidden));
     }
 
     private void removeLevel() {

@@ -36,17 +36,20 @@ public class ParserLevel {
     private int tagId;                             // Unique tag id for FORMAT command or group.
     private final int externality;                 // Externality level
     private final boolean escape;                  // Escape special sequences in this level
+    private final boolean hidden;                  // Treat level as translatable but hide content from translation
 
     private LinkedList<CommandArgument> commandArguments; // Defined arguments of current command.
 
-    public ParserLevel(final boolean translatable, final int externality, final boolean escape) {
+    public ParserLevel(final boolean translatable, final int externality, final boolean escape, final boolean hidden) {
         this.translatable = translatable;
         this.externality = externality;
         this.escape = escape;
+        this.hidden = hidden;
         this.optionsConsumer = false;
         this.argumentConsumer = false;
         this.command = null;
-        this.commandArguments = new LinkedList<>();;
+        this.tagId = 0;
+        this.commandArguments = new LinkedList<>();
     }
 
     public void registerCommand(Command command) {
@@ -71,7 +74,7 @@ public class ParserLevel {
     }
 
     public boolean hasArgumentsInQueue() {
-        return commandArguments.size() > 0;
+        return !commandArguments.isEmpty();
     }
 
     public Command getCommand() {
@@ -88,6 +91,10 @@ public class ParserLevel {
 
     public boolean isOptionsConsumer() {
         return optionsConsumer;
+    }
+
+    public boolean isHidden() {
+        return hidden;
     }
 
     /**

@@ -164,7 +164,7 @@ public class SimpleLatexFilter extends AbstractFilter {
                     (firstTokenTagId < 0 && tagId != firstTokenTagId) || // New tag begin/end after end of previous tag
                     (firstTokenCommand != null && firstTokenCommand.hasPlainArgument() && tagId == -firstTokenTagId) // Empty command with tag pair like \emph{}
             );
-            boolean doAddToCache = (tagId != 0 ) || // First and last tag case
+            boolean doAddToCache = (tagId != 0) || // First and last tag case
                     (externality > baseExternality);  // || // External parts of tag
 
             if (doFlushCache) {

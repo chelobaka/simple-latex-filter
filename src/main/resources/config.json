@@ -63,6 +63,16 @@
           "args": null
         },
         {
+          "name": "pageref",
+          "tag": "pr",
+          "args": [{"translate": false}]
+        },
+        {
+          "name": "ref",
+          "tag": "r",
+          "args": [{"translate": false}]
+        },
+        {
           "name": "small",
           "tag": "sz4",
           "args": null
@@ -218,7 +228,6 @@
         "par",
         "raggedleft",
         "raggedright",
-        "ref",
         "setcounter",
         "stepcounter",
         "textwidth",
