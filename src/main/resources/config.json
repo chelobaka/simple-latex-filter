@@ -108,11 +108,6 @@
           ]
         },
         {
-          "name": "item",
-          "tag": "i2",
-          "args": null
-        },
-        {
           "name": "noindent",
           "tag": "n1",
           "args": null
@@ -218,6 +213,7 @@
         "fi",
         "if",
         "includegraphics",
+        "item",
         "label",
         "newpage",
         "hline",
