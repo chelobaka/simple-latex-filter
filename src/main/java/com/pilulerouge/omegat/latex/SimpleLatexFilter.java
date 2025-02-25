@@ -92,6 +92,14 @@ public class SimpleLatexFilter extends AbstractFilter {
         Core.registerMarker(new Highlighter());
     }
 
+    /**
+     * Reload internal configuration
+     * @throws IOException
+     */
+    public static void loadInternalConfig() throws IOException {
+        CommandCenter.loadInternalConfig();
+    }
+
     public SimpleLatexFilter() throws IOException {
         commandCenter = new CommandCenter();
         parser = new Parser(commandCenter);
@@ -301,6 +309,7 @@ public class SimpleLatexFilter extends AbstractFilter {
                 content = matcher.replaceAll(replacement);
             }
         }
+        // TODO: Strip spaces
         content = processEntry(content, comment);
         // Escape special characters
         if (escape) {

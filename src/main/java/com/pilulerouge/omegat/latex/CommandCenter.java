@@ -60,6 +60,8 @@ public class CommandCenter {
     private final Map<Integer, String> lastTags; // Tag ID to tag
     private final Map<String, String> firstToLastTags; // First to last tag for a pair
 
+    private static boolean internalConfigIsLoaded;
+
     static {
         try {
             loadAndCopyConfig();
@@ -68,21 +70,21 @@ public class CommandCenter {
         }
     }
 
-    public CommandCenter() {
+    CommandCenter() {
         tagCounters = new HashMap<>();
         firstOrClosedTags = new HashMap<>();
         lastTags = new HashMap<>();
         firstToLastTags = new HashMap<>();
     }
 
-    public void reset() {
+    void reset() {
         tagCounters.clear();
         firstOrClosedTags.clear();
         lastTags.clear();
         firstToLastTags.clear();
     }
 
-    public Command getCommand(String name) {
+    Command getCommand(String name) {
         if (name == null) {
             return null;
         }
@@ -96,7 +98,7 @@ public class CommandCenter {
      * Get virtual command for LaTeX group.
      * @return group command
      */
-    public Command getGroupCommand() {
+    Command getGroupCommand() {
         return getCommand(Command.GROUP_COMMAND_NAME);
     }
 
@@ -105,7 +107,7 @@ public class CommandCenter {
      * @param tagId tag id from parser mark
      * @return tag string
      */
-    public String getLastTag(int tagId) {
+    String getLastTag(int tagId) {
         return lastTags.get(tagId);
     }
 
@@ -116,7 +118,7 @@ public class CommandCenter {
      * @param tagId tag id from parser mark
      * @return tag string
      */
-    public String getFirstOrClosedTag(String content, Command command, int tagId, boolean closed) {
+    String getFirstOrClosedTag(String content, Command command, int tagId, boolean closed) {
         String firstOrClosedTag, lastTag;
 
         if (firstOrClosedTags.containsKey(content)) {
@@ -150,31 +152,49 @@ public class CommandCenter {
         return firstOrClosedTag;
     }
 
+    private static void resetConfig() {
+        commandsByName.clear();
+        optionConsumers.clear();
+        argumentConsumers.clear();
+        tableEnvironments.clear();
+    }
+
+    static void loadInternalConfig() throws IOException {
+        if (internalConfigIsLoaded) {
+            return;
+        }
+        URL internalConfigUrl = CommandCenter.class.getClassLoader().getResource(resourceConfigFileName);
+        loadConfig(internalConfigUrl);
+        internalConfigIsLoaded = true;
+        String pluginClassName = SimpleLatexFilter.class.getSimpleName();
+        logLocalRB("LOG_INTERNAL_CONFIG_LOADED", pluginClassName);
+    }
+
     private static void loadAndCopyConfig() throws IOException {
         String pluginClassName = SimpleLatexFilter.class.getSimpleName();
         Path userConfigPath = Paths.get(getConfigDir(), pluginClassName + ".json");
         URL userConfigUrl = userConfigPath.toUri().toURL();
-        URL internalConfigUrl = CommandCenter.class.getClassLoader().getResource(resourceConfigFileName);
 
         Map<String, String> options = getFilterOptions();
-        boolean loadUserConfig = false;
+        boolean settingLoadUserConfig = false;
         if (options.containsKey(CONF_LOAD_USER_CONFIG)) {
-            loadUserConfig = Boolean.parseBoolean(options.get(CONF_LOAD_USER_CONFIG));
+            settingLoadUserConfig = Boolean.parseBoolean(options.get(CONF_LOAD_USER_CONFIG));
         }
 
-        if (loadUserConfig) {
+        if (settingLoadUserConfig) {
             if (!Files.exists(userConfigPath)) {
                 copyConfig();
             }
             try {
                 loadConfig(userConfigUrl);
+                internalConfigIsLoaded = false;
                 logLocalRB("LOG_USER_CONFIG_LOADED", pluginClassName,  userConfigPath);
             } catch (Exception e) {
                 logLocalRB("LOG_USER_CONFIG_LOAD_FAILED", pluginClassName);
-                loadConfig(internalConfigUrl);
+                loadInternalConfig();
             }
         } else {
-            loadConfig(internalConfigUrl);
+            loadInternalConfig();
         }
     }
 
@@ -194,6 +214,7 @@ public class CommandCenter {
     }
 
     private static void loadConfig(URL configFileUrl) throws IOException {
+        resetConfig();
 
         JsonNode root;
         ObjectMapper mapper = new ObjectMapper();
@@ -297,15 +318,15 @@ public class CommandCenter {
         return null;
     }
 
-    public boolean isOptionConsumer(String envName) {
+    boolean isOptionConsumer(String envName) {
         return optionConsumers.contains(envName);
     }
 
-    public boolean isArgumentConsumer(String envName) {
+    boolean isArgumentConsumer(String envName) {
         return argumentConsumers.contains(envName);
     }
 
-    public boolean isTableEnvironment(String envName) {
+    boolean isTableEnvironment(String envName) {
         return tableEnvironments.contains(envName);
     }
 }

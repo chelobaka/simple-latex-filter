@@ -22,6 +22,7 @@
 package org.omegat.filters;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,6 +34,10 @@ import static org.junit.Assert.*;
 public class SimpleLatexFilterTest extends TestFilterBase {
 
     String testDocument = "/test.tex";
+
+    public SimpleLatexFilterTest() throws IOException {
+        SimpleLatexFilter.loadInternalConfig(); // Always use internal filter configuration
+    }
 
     @Test
     public void testFilterFeatures() throws Exception {
@@ -77,6 +82,7 @@ public class SimpleLatexFilterTest extends TestFilterBase {
         assertEquals("This~is~unescaped", entries.get(i++));
         assertEquals("A <ls1>slight</ls1> and <ls2>heavy</ls2> letterspaced text.", entries.get(i++));
         assertEquals("See figures <r1/> and <r2/> on page <pr1/>. ", entries.get(i++));
+        assertEquals(" List item text", entries.get(i++));
     }
 
     @Test
