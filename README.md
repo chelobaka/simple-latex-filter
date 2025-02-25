@@ -5,12 +5,13 @@
 This plugin implements a subset of LaTeX syntax as OmegaT file filter. Translated content is
 expected to be Unicode encoded.
 
-Since LaTeX commands are numerous and cannot be completely described by the code,
-the filter uses JSON file for command definitions. End users are free to extend this
-file to meet their content requirements.
+Since LaTeX commands are numerous and documents can contain custom commands, it is a good idea
+to describe all unknown commands before starting the translation process. See the [manual](CONFIGURATION.md)
+for details.
 
-The filter tries to support common LaTeX features making translation process comfortable
-enough (comparing to internal LaTeX filter in OmegaT) at the same time.
+This filter doesn't cover all cases of LaTeX control sequences. If you stumble upon something you
+can't fix with manual configuration, then create an issue.
+
 
 ## Building
 

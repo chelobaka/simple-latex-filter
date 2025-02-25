@@ -5,6 +5,9 @@ The filter relies on internal configuration by default. Enabling user configurat
 After it is enabled internal configuration is copied to `SimpleLatexFilter.json` in OmegaT user configuration directory.
 This file is never overwritten by the filter.
 
+If you update the plugin, move your user configuration file somewhere else and let the filter create a new one. After
+that you can copy your custom definitions into new configuration.
+
 The configuration contains two root sections: `allCommands` and `environments`.
 
 ### Commands are divided into three groups:
@@ -50,10 +53,10 @@ Each property contains list of environment names:
 
 ## Helper script
 
-There is a simple Python script coming with the plugin which can used to detect inconsistencies (not all for sure) in 
-the configuration file and optionally check LaTeX content for unknown commands.
+There is a Python script `slf_checker.py` coming with the plugin which can used to detect inconsistencies
+(not all of them for sure) in the configuration file and optionally check LaTeX content for unknown commands.
 
 Usage:
 ```
-python checker.py <path-to-configuration-file> [path-to-content-directory-or-file]
+python3 slf_checker.py <path-to-configuration-file> [path-to-content-directory-or-file]
 ```
