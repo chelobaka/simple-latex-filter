@@ -1,4 +1,7 @@
-\pagenumbering{roman}
+% Test command declaraion
+\renewcommand*{\tref}[1]{%
+	\hyperref[{#1}]{\ref*{#1}~\nameref*{#1}}
+}
 
 Hello, world!
 
