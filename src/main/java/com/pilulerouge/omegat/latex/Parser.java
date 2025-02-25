@@ -129,7 +129,7 @@ public class Parser {
                 int newLevelExternality = currentExternality;
                 boolean newLevelIsHidden = currentLevel.isHidden();
 
-                if (currentLevel.hasArgumentsInQueue() && !newLevelIsHidden) {
+                if (currentLevel.hasArgumentsInQueue() && !newLevelIsHidden && newLevelTranslatable) {
                     tagId = currentLevel.getTagId();
                     CommandArgument currentArg = currentLevel.fetchArgument();
                     // Flag for non-translatable argument of FORMAT command
