@@ -55,6 +55,8 @@ public class SimpleLatexFilter extends AbstractFilter {
 
     private ListIterator<Token> tokenIterator;
 
+    private static final Pattern STN_HEAD = Pattern.compile("^[\\s\\t\\n]+");
+    private static final Pattern STN_TAIL = Pattern.compile("[\\s\\t\\n]+$");
 
     /**
      * Unescape patterns with substitutions. ORDER IS IMPORTANT!
@@ -309,8 +311,8 @@ public class SimpleLatexFilter extends AbstractFilter {
                 content = matcher.replaceAll(replacement);
             }
         }
-        // TODO: Strip spaces
-        content = processEntry(content, comment);
+
+        content = trimAndProcessEntry(content, comment);
         // Escape special characters
         if (escape) {
             for (Map.Entry<Pattern, String> e: ESCAPE_MAP.entrySet()) {
@@ -321,6 +323,27 @@ public class SimpleLatexFilter extends AbstractFilter {
             }
         }
         return content;
+    }
+
+    private String trimAndProcessEntry(final String content, final String comment) {
+        int headPad, tailPad;
+
+        Matcher matcher = STN_HEAD.matcher(content);
+        if (matcher.find()) {
+            headPad = matcher.end();
+        } else {
+            headPad = 0;
+        }
+
+        matcher = STN_TAIL.matcher(content);
+        if (matcher.find()) {
+            tailPad = matcher.start();
+        } else {
+            tailPad = content.length();
+        }
+
+        return content.substring(0, headPad) + processEntry(content.substring(headPad, tailPad), comment) +
+            content.substring(tailPad);
     }
 
     private void resetState() {

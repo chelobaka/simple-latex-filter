@@ -68,21 +68,21 @@ public class SimpleLatexFilterTest extends TestFilterBase {
         assertEquals("http://foo.bar?a=1&b=%20%40", entries.get(i++));
         // Table cells (spaces are trimmed by OmegaT)
         assertEquals("Country List", entries.get(i++));
-        assertEquals("\n    Country Name or Area Name ", entries.get(i++));
-        assertEquals(" ISO ALPHA 2 Code ", entries.get(i++));
-        assertEquals("ISO ALPHA 3 Code ", entries.get(i++));
-        assertEquals(" ISO numeric Code", entries.get(i++));
-        assertEquals("\n    Afghanistan ", entries.get(i++));
-        assertEquals(" AF ", entries.get(i++));
-        assertEquals(" AFG ", entries.get(i++));
-        assertEquals(" 004 ", entries.get(i++));
+        assertEquals("Country Name or Area Name", entries.get(i++));
+        assertEquals("ISO ALPHA 2 Code", entries.get(i++));
+        assertEquals("ISO ALPHA 3 Code", entries.get(i++));
+        assertEquals("ISO numeric Code", entries.get(i++));
+        assertEquals("Afghanistan", entries.get(i++));
+        assertEquals("AF", entries.get(i++));
+        assertEquals("AFG", entries.get(i++));
+        assertEquals("004", entries.get(i++));
         assertEquals("Inline math types: <Math1/>, <Math2/>, <Math3/>.", entries.get(i++));
         assertEquals("This is verbatim \\emph{text} % Not a comment \\verb+HERE+", entries.get(i++));
         assertEquals("A `verb` command test: <verb1/>", entries.get(i++));
         assertEquals("This~is~unescaped", entries.get(i++));
         assertEquals("A <ls1>slight</ls1> and <ls2>heavy</ls2> letterspaced text.", entries.get(i++));
-        assertEquals("See figures <r1/> and <r2/> on page <pr1/>. ", entries.get(i++));
-        assertEquals(" List item text", entries.get(i++));
+        assertEquals("See figures <r1/> and <r2/> on page <pr1/>.", entries.get(i++));
+        assertEquals("List item text", entries.get(i++));
     }
 
     @Test
