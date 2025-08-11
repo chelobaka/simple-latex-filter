@@ -1,7 +1,7 @@
 {
   "allCommands": [
     {
-      "_comment": "Converted to tags. Verbose listing only. Absent `args` property treated as single argument. Commands without arguments should have agrs=null",
+      "_comment": "Converted to tags. Verbose listing only. Absent `args` property treated as single argument. Commands without arguments should have args=null",
       "type": "FORMAT",
       "commands": [
         {
@@ -70,6 +70,11 @@
         {
           "name": "ref",
           "tag": "r",
+          "args": [{"translate": false}]
+        },
+        {
+          "name": "vref",
+          "tag": "vr",
           "args": [{"translate": false}]
         },
         {
@@ -167,6 +172,17 @@
               "escape": false
             }
           ]
+        },
+        {
+          "name": "index",
+          "tag": "index",
+          "args": [
+            {
+              "translate": true,
+              "external": true,
+              "escape": false
+            }
+          ]
         }
       ]
     },
@@ -181,6 +197,7 @@
         "footnotetext",
         "section",
         "subsection",
+        "subsubsection",
         {
           "name": "addcontentsline",
           "args": [{"translate": false}, {"translate": false}, {"translate": true}]
@@ -204,6 +221,7 @@
         "captionsetup",
         "cleardoublepage",
         "clearpage",
+        "cline",
         "else",
         "endfirsthead",
         "endfoot",
@@ -215,6 +233,7 @@
         "includegraphics",
         "item",
         "label",
+        "linewidth",
         "newcommand",
         "newpage",
         "hline",
@@ -236,7 +255,7 @@
   ],
   "environments": {
     "consumeOptions": ["figure", "table", "longtable"],
-    "consumeArguments": ["wrapfigure", "tabular", "tabularx", "longtable"],
-    "table": ["tabular", "tabularx", "longtable"]
+    "consumeArguments": ["wrapfigure", "tabular", "tabularx", "tabulary", "longtable"],
+    "table": ["tabular", "tabularx", "tabulary", "longtable"]
   }
 }
