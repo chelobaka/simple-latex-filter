@@ -59,9 +59,8 @@ import org.xml.sax.InputSource;
 
 import org.apache.commons.io.FileUtils;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-import static org.junit.Assert.*;
-
+import static org.xmlunit.assertj3.XmlAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Base class for test filter parsing.
@@ -287,7 +286,8 @@ abstract class TestFilterBase {
         n = (Node) exprTool.evaluate(doc2, XPathConstants.NODE);
         n.setNodeValue("");
 
-        assertXMLEqual(doc1, doc2);
+        assertThat(doc1).and(doc2).areSimilar();
+        // assertXMLEqual(doc1, doc2);
     }
 
     protected void compareXML(File f1, File f2) throws Exception {
@@ -295,7 +295,8 @@ abstract class TestFilterBase {
     }
 
     protected void compareXML(URL f1, URL f2) throws Exception {
-        assertXMLEqual(new InputSource(f1.toExternalForm()), new InputSource(f2.toExternalForm()));
+        assertThat(f1).and(f2).areSimilar();
+        // assertXMLEqual(new InputSource(f1.toExternalForm()), new InputSource(f2.toExternalForm()));
     }
 
     protected static class ParsedEntry {
