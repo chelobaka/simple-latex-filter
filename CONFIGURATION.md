@@ -33,10 +33,14 @@ commands having an external argument receive a tag counter number to their tag n
 * `escape` — setting this property to `false` disables character escaping back and forth for argument content. Examples
 are URLs in hyperlinks and verbatim content.
 
-*A note about tag numbering:*
+### Tag numbering
+OmegaT tag names must start with a letter and end with a digit. Tags for `FORMAT` commands are constructed from `tag`
+property. If a command has an externally (separately) translated argument then tag is extended with a unique number. 
+Unique tag numbering starts with 1, so it is safe to have `f0` used for `\footnotemark` and `f` for `\footnote` which
+becomes `f1`, `f2` and so on.
 
-`FORMAT` commands with an external argument receive tag numbers to their names. The numbering starts with 1, so it is
-safe to have `f0` used for `\footnotemark` and `f` for `\footnote` which becomes `f1`, `f2` and so on.
+**WARNING**: Adding new source files to your OmegaT project after at least partially translating it might change tag
+numbering and invalidate some translated segments.
 
 ### Reserved tag names
 Some tag names are used by the filter for special cases:
