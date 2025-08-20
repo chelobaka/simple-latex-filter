@@ -60,21 +60,18 @@ public class CommandCenter {
     private final Map<Integer, String> lastTags; // Tag ID to tag
     private final Map<String, String> firstToLastTags; // First to last tag for a pair
 
-    private static boolean internalConfigIsLoaded;
+    private static boolean configIsLoaded = false;
 
-    static {
-        try {
-            loadAndCopyConfig();
-        } catch (IOException e) {
-            // Shouldn't happen with internal config
-        }
-    }
-
-    CommandCenter() {
+    public CommandCenter(final boolean useInternalConfig) throws IOException {
         tagCounters = new HashMap<>();
         firstOrClosedTags = new HashMap<>();
         lastTags = new HashMap<>();
         firstToLastTags = new HashMap<>();
+        if (useInternalConfig) {
+            loadInternalConfig();
+        } else {
+            loadAndCopyConfig();
+        }
     }
 
     void reset() {
@@ -160,17 +157,16 @@ public class CommandCenter {
     }
 
     static void loadInternalConfig() throws IOException {
-        if (internalConfigIsLoaded) {
-            return;
-        }
+        if (configIsLoaded) return;
         URL internalConfigUrl = CommandCenter.class.getClassLoader().getResource(resourceConfigFileName);
         loadConfig(internalConfigUrl);
-        internalConfigIsLoaded = true;
         String pluginClassName = SimpleLatexFilter.class.getSimpleName();
         logLocalRB("LOG_INTERNAL_CONFIG_LOADED", pluginClassName);
     }
 
     private static void loadAndCopyConfig() throws IOException {
+        if (configIsLoaded) return;
+
         String pluginClassName = SimpleLatexFilter.class.getSimpleName();
         Path userConfigPath = Paths.get(getConfigDir(), pluginClassName + ".json");
         URL userConfigUrl = userConfigPath.toUri().toURL();
@@ -187,10 +183,10 @@ public class CommandCenter {
             }
             try {
                 loadConfig(userConfigUrl);
-                internalConfigIsLoaded = false;
                 logLocalRB("LOG_USER_CONFIG_LOADED", pluginClassName,  userConfigPath);
             } catch (Exception e) {
                 logLocalRB("LOG_USER_CONFIG_LOAD_FAILED", pluginClassName);
+                resetConfig();
                 loadInternalConfig();
             }
         } else {
@@ -214,7 +210,7 @@ public class CommandCenter {
     }
 
     private static void loadConfig(URL configFileUrl) throws IOException {
-        resetConfig();
+        if (configIsLoaded) return;
 
         JsonNode root;
         ObjectMapper mapper = new ObjectMapper();
@@ -235,6 +231,7 @@ public class CommandCenter {
             CommandType commandType = CommandType.valueOf(tcNode.get("type").asText());
             for (JsonNode commandNode : tcNode.get("commands")) {
                 List<CommandArgument> args = new ArrayList<>();
+                List<CommandArgument> options = new ArrayList<>();
                 String commandName, tagName;
                 if (commandNode.isTextual()) {
                     commandName = commandNode.asText();
@@ -245,6 +242,7 @@ public class CommandCenter {
                 } else {
                     commandName = commandNode.get("name").asText();
                     tagName = getJSONStringValue(commandNode, "tag");
+
                     JsonNode argsNode = commandNode.get("args");
                     if (argsNode == null && commandType != CommandType.CONTROL) {
                         args.add(new CommandArgument(true, false, true));
@@ -256,9 +254,19 @@ public class CommandCenter {
                             args.add(new CommandArgument(translatable, external, escape));
                         }
                     }
+
+                    JsonNode optionsNode = commandNode.get("options");
+                    if (optionsNode != null) {
+                        for (JsonNode optNode: optionsNode) {
+                            boolean translatable = getJSONBooleanValue(optNode, "translate", true);
+                            boolean external = getJSONBooleanValue(optNode, "external", false);
+                            boolean escape = getJSONBooleanValue(optNode, "escape", true);
+                            options.add(new CommandArgument(translatable, external, escape));
+                        }
+                    }
                 }
 
-                addCommand(commandName, commandType, tagName, args);
+                addCommand(commandName, commandType, tagName, args, options);
             }
         }
         // Add virtual group command
@@ -266,7 +274,8 @@ public class CommandCenter {
                 Command.GROUP_COMMAND_NAME,
                 CommandType.FORMAT,
                 Command.GROUP_COMMAND_TAG,
-                Collections.singletonList(new CommandArgument(true, false, true))
+                Collections.singletonList(new CommandArgument(true, false, true)),
+                Collections.emptyList()
         );
 
         // Add unknown command
@@ -274,7 +283,8 @@ public class CommandCenter {
                 Command.UNKNOWN_COMMAND_NAME,
                 CommandType.FORMAT,
                 Command.UNKNOWN_COMMAND_TAG,
-                Collections.singletonList(new CommandArgument(true, false, true))
+                Collections.singletonList(new CommandArgument(true, false, true)),
+                Collections.emptyList()
         );
 
         // Add mask command
@@ -282,6 +292,7 @@ public class CommandCenter {
                 Command.MASK_COMMAND_NAME,
                 CommandType.FORMAT,
                 Command.MASK_COMMAND_TAG,
+                Collections.emptyList(),
                 Collections.emptyList()
         );
 
@@ -290,15 +301,18 @@ public class CommandCenter {
                 Command.INLINE_MATH_COMMAND_NAME,
                 CommandType.FORMAT,
                 Command.INLINE_MATH_COMMAND_TAG,
+                Collections.emptyList(),
                 Collections.emptyList()
         );
+        configIsLoaded = true;
     }
 
     private static void addCommand(String commandName, CommandType commandType, String tagName,
-                                   List<CommandArgument> args) {
+                                   List<CommandArgument> args, List<CommandArgument> options) {
         commandsByName.put(
                 commandName,
-                new Command(commandType, commandName, tagName, args.toArray(new CommandArgument[0]))
+                new Command(commandType, commandName, tagName, args.toArray(new CommandArgument[0]),
+                        options.toArray(new CommandArgument[0]))
         );
 
     }

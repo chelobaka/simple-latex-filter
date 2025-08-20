@@ -1,7 +1,7 @@
 {
   "allCommands": [
     {
-      "_comment": "Converted to tags. Verbose listing only. Absent `args` property treated as single argument. Commands without arguments should have agrs=null",
+      "_comment": "Converted to tags. Verbose listing only. Absent `args` property treated as a single argument {\"translate\": true, \"external\": false}. Commands without arguments should have agrs=[]",
       "type": "FORMAT",
       "commands": [
         {
@@ -11,7 +11,7 @@
         {
           "name": "centering",
           "tag": "c1",
-          "args": null
+          "args": []
         },
         {
           "name": "emph",
@@ -30,37 +30,37 @@
         {
           "name": "footnotemark",
           "tag": "f0",
-          "args": null
+          "args": []
         },
         {
           "name": "Huge",
           "tag": "sz10",
-          "args": null
+          "args": []
         },
         {
           "name": "huge",
           "tag": "sz9",
-          "args": null
+          "args": []
         },
         {
           "name": "LARGE",
           "tag": "sz8",
-          "args": null
+          "args": []
         },
         {
           "name": "Large",
           "tag": "sz7",
-          "args": null
+          "args": []
         },
         {
           "name": "large",
           "tag": "sz6",
-          "args": null
+          "args": []
         },
         {
           "name": "normalsize",
           "tag": "sz5",
-          "args": null
+          "args": []
         },
         {
           "name": "pageref",
@@ -75,23 +75,23 @@
         {
           "name": "small",
           "tag": "sz4",
-          "args": null
+          "args": []
         },
 
         {
           "name": "footnotesize",
           "tag": "sz3",
-          "args": null
+          "args": []
         },
         {
           "name": "scriptsize",
           "tag": "sz2",
-          "args": null
+          "args": []
         },
         {
           "name": "tiny",
           "tag": "sz1",
-          "args": null
+          "args": []
         },
         {
           "name": "href",
@@ -110,17 +110,17 @@
         {
           "name": "noindent",
           "tag": "n1",
-          "args": null
+          "args": []
         },
         {
           "name": "protect",
           "tag": "p0",
-          "args": null
+          "args": []
         },
         {
           "name": "textasciitilde",
           "tag": "t0",
-          "args": null
+          "args": []
         },
         {
           "name": "textbf",
@@ -171,16 +171,28 @@
       ]
     },
     {
-      "_comment": "Compact listing assumes single translatable argument. Options are copied as is.",
+      "_comment": "Compact listing assumes single translatable argument.",
       "type": "CONTENT",
       "commands": [
         "caption",
         "cehead",
-        "chapter",
         "cohead",
         "footnotetext",
-        "section",
-        "subsection",
+        {
+          "name": "chapter",
+          "args": [{"translate": true}],
+          "options": [{"translate": true}]
+        },
+        {
+          "name": "section",
+          "args": [{"translate": true}],
+          "options": [{"translate": true}]
+        },
+        {
+          "name": "subsection",
+          "args": [{"translate": true}],
+          "options": [{"translate": true}]
+        },
         {
           "name": "addcontentsline",
           "args": [{"translate": false}, {"translate": false}, {"translate": true}]
@@ -235,7 +247,7 @@
     }
   ],
   "environments": {
-    "consumeOptions": ["figure", "table", "longtable"],
+    "consumeOptions": ["figure", "table", "longtable", "tabular"],
     "consumeArguments": ["wrapfigure", "tabular", "tabularx", "longtable"],
     "table": ["tabular", "tabularx", "longtable"]
   }

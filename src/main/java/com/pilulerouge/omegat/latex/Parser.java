@@ -35,32 +35,38 @@ public class Parser {
     private List<String> currentEnvironments;
     private int lastTagId; // New tags get ID from this one
     private boolean maskingTokens;
-    private TokenType prevTokenType;
 
     public Parser(CommandCenter cc) {
         commandCenter = cc;
         levels = new LinkedList<>();
+        levels.add(new ParserLevel(true, 0, true, false, false));
         lastTagId = 0;
         maskingTokens = false;
         environments = new LinkedList<>();
-        prevTokenType = null;
+        currentEnvironments = Collections.emptyList();
     }
 
     public void reset() {
         lastTagId = 0;
         maskingTokens = false;
         levels.clear();
-        levels.add(new ParserLevel(true, 0, true, false)); // Root level
+        levels.add(new ParserLevel(true, 0, true, false, false)); // Root level
         environments.clear();
         currentEnvironments = Collections.emptyList();
-        prevTokenType = null;
     }
 
     public void processToken(final Token token) {
 
         Command command;
+        ParserLevel parentLevel;
         int tagId = 0;
 
+        boolean newLevelTranslatable;
+        boolean newLevelEscapeContent;
+        int newLevelExternality;
+        boolean newLevelIsHidden;
+
+        // Inherit properties from current level
         ParserLevel currentLevel = getCurrentLevel();
         int currentExternality = currentLevel.getExternality();
         boolean tokenTranslatable = currentLevel.isTranslatable();
@@ -68,9 +74,16 @@ public class Parser {
 
         TokenType tt = token.getType();
 
-        // Unregister command if this token is not options or an argument start
-        if (tt != TokenType.GROUP_BEGIN && tt != TokenType.OPTIONS && currentLevel.hasCommand()) {
+        // Unregister command if this token is not an option/argument start
+        if (currentLevel.hasCommand() && tt != TokenType.GROUP_BEGIN && tt != TokenType.OPTION_BEGIN) {
             currentLevel.unregisterCommand();
+        }
+
+        // Remove consumer flags on environment definition end
+        if ((currentLevel.isOptionConsumer() || currentLevel.isArgumentConsumer()) &&
+                tt != TokenType.GROUP_BEGIN && tt != TokenType.OPTION_BEGIN) {
+            currentLevel.setArgumentConsumer(false);
+            currentLevel.setOptionConsumer(false);
         }
 
         switch (tt) {
@@ -97,45 +110,78 @@ public class Parser {
                 token.setName(INLINE_MATH_COMMAND_NAME);
                 tagId = ++lastTagId;
                 break;
-            case OPTIONS:
-                if (currentLevel.isHidden()) {
+            case OPTION_BEGIN:
+                // Break early if token is not an option begin but a text
+                if (!currentLevel.hasCommand() && !currentLevel.isOptionConsumer())
                     break;
-                }
-                if (currentLevel.isOptionsConsumer()) {
-                    currentLevel.setOptionsConsumer(false);
+
+                // Initialize new level properties from parent level
+                newLevelTranslatable = currentLevel.isTranslatable() && !currentLevel.isOptionConsumer();
+                newLevelEscapeContent = currentLevel.doEscape();
+                newLevelExternality = currentExternality;
+                newLevelIsHidden = currentLevel.isHidden();
+
+                if (currentLevel.isOptionConsumer()) {
                     tokenTranslatable = false;
-                    break;
-                }
-                // Handle command options
-                if (prevTokenType == TokenType.COMMAND) {
-                    command = currentLevel.getCommand(); // Shouldn't fail I guess
-                    CommandType ct = command.getType();
-                    if (ct == CommandType.FORMAT) {
-                        tagId = currentLevel.getTagId();
-                    } else {
+                    newLevelTranslatable = false;
+                } else {
+                    tagId = currentLevel.getTagId();
+                    // Adjust level properties for configured option
+                    if (currentLevel.hasOptionInQueue()) {
+                        CommandArgument currentOption = currentLevel.fetchOption();
+
+                        // Flag for non-translatable option of FORMAT command
+                        newLevelIsHidden = !currentOption.isTranslatable() && newLevelTranslatable &&
+                                currentLevel.getCommand().getType() == CommandType.FORMAT;
+                        newLevelTranslatable = newLevelTranslatable && (currentOption.isTranslatable() || newLevelIsHidden);
+                        newLevelEscapeContent = currentOption.doEscape() && !newLevelIsHidden;
+
+                        if (currentOption.isExternal() && newLevelTranslatable && !newLevelIsHidden) {
+                            newLevelExternality += 1;
+                        }
+                    } else { // No configured option.
+                        newLevelIsHidden = newLevelTranslatable && currentLevel.getCommand().getType() == CommandType.FORMAT;
+                    }
+                    // Token should be translatable only as part of a FORMAT command
+                    if (currentLevel.getCommand().getType() != CommandType.FORMAT) {
                         tokenTranslatable = false;
                     }
-                    break;
                 }
-                // Table row hints like [1ex]
-                if (!environments.isEmpty() && commandCenter.isTableEnvironment(environments.getLast())) {
-                    tokenTranslatable = false;
+                addLevel(newLevelTranslatable, newLevelExternality, newLevelEscapeContent, newLevelIsHidden, true);
+
+                // Inherit tagId for hidden levels
+                if (newLevelIsHidden) {
+                    ParserLevel newLevel = getCurrentLevel();
+                    newLevel.setTagId(currentLevel.getTagId());
+                }
+                break;
+            case OPTION_END:
+                if (!currentLevel.isOptionValue())
                     break;
+
+                removeLevel();
+
+                parentLevel = getCurrentLevel();
+                currentExternality = parentLevel.getExternality();
+                tagId = parentLevel.getTagId();
+
+                if (parentLevel.hasCommand() && parentLevel.getCommand().getType() != CommandType.FORMAT) {
+                    tokenTranslatable = false;
                 }
                 break;
             case GROUP_BEGIN:
-                boolean newLevelTranslatable = currentLevel.isTranslatable() && !currentLevel.isArgumentConsumer();
-                boolean newLevelEscapeContent = currentLevel.doEscape();
-                int newLevelExternality = currentExternality;
-                boolean newLevelIsHidden = currentLevel.isHidden();
+                newLevelTranslatable = currentLevel.isTranslatable() && !currentLevel.isArgumentConsumer();
+                newLevelEscapeContent = currentLevel.doEscape();
+                newLevelExternality = currentExternality;
+                newLevelIsHidden = currentLevel.isHidden();
 
-                if (currentLevel.hasArgumentsInQueue() && !newLevelIsHidden && newLevelTranslatable) {
+                if (currentLevel.hasArgumentInQueue() && !newLevelIsHidden && newLevelTranslatable) {
                     tagId = currentLevel.getTagId();
                     CommandArgument currentArg = currentLevel.fetchArgument();
                     // Flag for non-translatable argument of FORMAT command
-                    newLevelIsHidden = (!currentArg.isTranslatable() &&
-                            currentLevel.getCommand().getType() == CommandType.FORMAT);
-                    newLevelTranslatable = (currentArg.isTranslatable() && newLevelTranslatable) || newLevelIsHidden;
+                    newLevelIsHidden = !currentArg.isTranslatable() &&
+                            currentLevel.getCommand().getType() == CommandType.FORMAT;
+                    newLevelTranslatable = currentArg.isTranslatable() || newLevelIsHidden;
                     newLevelEscapeContent = currentArg.doEscape() && !newLevelIsHidden;
 
                     if (currentArg.isExternal() && newLevelTranslatable && !newLevelIsHidden) {
@@ -146,6 +192,7 @@ public class Parser {
                     if (currentLevel.getCommand().getType() != CommandType.FORMAT) {
                         tokenTranslatable = false;
                     }
+
                 // Create virtual group command on orphan group begin
                 } else if (newLevelTranslatable && !newLevelIsHidden) {
                     token.setName(GROUP_COMMAND_NAME);
@@ -156,7 +203,8 @@ public class Parser {
                 } else if (currentLevel.isArgumentConsumer()) {
                     tokenTranslatable = false;
                 }
-                addLevel(newLevelTranslatable, newLevelExternality, newLevelEscapeContent, newLevelIsHidden);
+                addLevel(newLevelTranslatable, newLevelExternality, newLevelEscapeContent, newLevelIsHidden, false);
+
                 // Inherit tagId for hidden levels
                 if (newLevelIsHidden) {
                     ParserLevel newLevel = getCurrentLevel();
@@ -167,7 +215,7 @@ public class Parser {
                 if (!onRootLevel()) {
                     removeLevel();
                 }
-                ParserLevel parentLevel = getCurrentLevel();
+                parentLevel = getCurrentLevel();
                 currentExternality = parentLevel.getExternality();
                 tagId = parentLevel.getTagId();
 
@@ -175,7 +223,7 @@ public class Parser {
                     tokenTranslatable = false;
                 }
 
-                if (parentLevel.hasCommand() && !parentLevel.hasArgumentsInQueue() && !parentLevel.isArgumentConsumer()) {
+                if (parentLevel.hasCommand() && !parentLevel.hasArgumentInQueue() && !parentLevel.isArgumentConsumer()) {
                     parentLevel.unregisterCommand();
                     tagId = -tagId;  // Inverse tag id indicates last tag
                 }
@@ -188,7 +236,7 @@ public class Parser {
                     currentLevel.setArgumentConsumer(true);
                 }
                 if (commandCenter.isOptionConsumer(envName)) {
-                    currentLevel.setOptionsConsumer(true);
+                    currentLevel.setOptionConsumer(true);
                 }
 
                 currentEnvironments = Collections.unmodifiableList(environments);
@@ -253,22 +301,19 @@ public class Parser {
             tokenEscapeContent = false;
         }
 
-        // Mark this token
         token.addParserMark(tokenTranslatable, currentExternality, tagId, tokenEscapeContent, currentEnvironments);
-
-        // Remember token type for next iteration
-        prevTokenType = tt;
     }
 
-    private void addLevel(final boolean translatable, final int externality, final boolean escape, final boolean hidden) {
-        levels.addLast(new ParserLevel(translatable, externality, escape, hidden));
+    private void addLevel(final boolean translatable, final int externality, final boolean escape,
+                          final boolean hidden, final boolean is_option) {
+        levels.addLast(new ParserLevel(translatable, externality, escape, hidden, is_option));
     }
 
     private void removeLevel() {
         levels.removeLast();
     }
 
-    private ParserLevel getCurrentLevel() {
+    public ParserLevel getCurrentLevel() {
         return levels.getLast();
     }
 

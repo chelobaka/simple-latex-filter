@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Token is a basic structure block used for parsing document.
  */
-class Token implements Comparable<Token> {
+public class Token implements Comparable<Token> {
     private final int start;
     private final int end;
     private final TokenType type;
@@ -42,15 +42,15 @@ class Token implements Comparable<Token> {
         this.parserMark = null;
     }
 
-    int getStart() {
+    public int getStart() {
         return start;
     }
 
-    int getEnd() {
+    public int getEnd() {
         return end;
     }
 
-    TokenType getType() {
+    public TokenType getType() {
         return type;
     }
 
@@ -62,7 +62,7 @@ class Token implements Comparable<Token> {
         this.name = name;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
@@ -94,5 +94,4 @@ class Token implements Comparable<Token> {
     public static Token getDummyToken(int position) {
         return getDummyToken(position, 0);
     }
-
 }

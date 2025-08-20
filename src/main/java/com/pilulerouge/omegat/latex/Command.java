@@ -52,13 +52,15 @@ public class Command {
     private final String tag;
     private final boolean numberedTags;
     private final CommandArgument[] args;
+    private final CommandArgument[] options;
     private final boolean hasPlainArgument;
 
-    public Command(CommandType type, String name, String tag, CommandArgument[] args) {
+    public Command(CommandType type, String name, String tag, CommandArgument[] args, CommandArgument[] options) {
         this.name = name;
         this.type = type;
         this.tag = tag;
         this.args = args;
+        this.options = options;
         this.hasPlainArgument = Arrays.stream(args).anyMatch(a -> a.isTranslatable() && !a.isExternal());
         this.numberedTags = (type == CommandType.FORMAT &&
                 Arrays.stream(args).anyMatch(CommandArgument::isExternal)) ||
@@ -84,6 +86,10 @@ public class Command {
 
     public CommandArgument[] getArgs() {
         return args;
+    }
+
+    public CommandArgument[] getOptions() {
+        return options;
     }
 
     public boolean isUnknown() {

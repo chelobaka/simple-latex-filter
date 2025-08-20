@@ -1,4 +1,10 @@
-% Test command declaraion
+% Command definitions shouldn't generate any content
+\newcommand{\ppath}[2][$\;\rightarrow\;$]{
+	\def\nextitem{\def\nextitem{#1}}
+	\renewcommand*{\do}[1]{\nextitem\textsf{\fcolorbox{light-gray}{light-gray}{##1}}}
+	\docsvlist{\#2}
+}[foo \emph{bar} baz]
+
 \renewcommand*{\tref}[1]{%
 	\hyperref[{#1}]{\ref*{#1}~\nameref*{#1}}
 }
@@ -11,7 +17,7 @@ Example of \textbf{bold} and \emph{emphasis}.
 
 Example of closed tag \emph and {virtual group command}.
 
-Let's try a footnote with a hyperlink inside\footnote{\emph{See:} \href{https://wikipedia.org}{Wikipedia}}
+Let's try a footnote with a hyperlink inside\footnote{\emph{See:} \href{https://wikipedia.org}{Wikipedia}}\footnotemark
 
 We can split \emph{tag pairs between segments.
 
@@ -47,7 +53,7 @@ URL with escaped characters \url{http://foo.bar?a=1&b=%20%40}
     \hline
     Country Name or Area Name & ISO ALPHA 2 Code &ISO ALPHA 3 Code & ISO numeric Code\\
     \hline
-    Afghanistan & AF & AFG & 004 \\ [1ex]
+    Afghanistan & AF & AFG & 004 \\
     \hline
 \end{tabular}
 
@@ -67,3 +73,7 @@ A \textls[10]{slight} and \textls[100]{heavy} letterspaced text.
 See figures~\ref{foo\boo{bar}} and~\ref{fig:f2} on page~\pageref{fig:f1}. % Test hidden argument content
 
 \item List item text
+
+Test [square brackets] text
+
+\chapter[short name]{long name} % Test translatable optional argument

@@ -38,12 +38,12 @@ import org.omegat.core.events.IApplicationEventListener;
 import org.omegat.filters2.AbstractFilter;
 import org.omegat.filters2.FilterContext;
 import org.omegat.filters2.Instance;
-import org.omegat.util.LinebreakPreservingReader;
 import org.omegat.util.Log;
 
 import static com.pilulerouge.omegat.latex.Command.GROUP_COMMAND_NAME;
 import static com.pilulerouge.omegat.latex.Tokenizer.tokenizeDocument;
 import static com.pilulerouge.omegat.latex.Util.RB;
+import static com.pilulerouge.omegat.latex.Util.readBufferWithLinebreaks;
 
 
 public class SimpleLatexFilter extends AbstractFilter {
@@ -94,37 +94,21 @@ public class SimpleLatexFilter extends AbstractFilter {
         Core.registerMarker(new Highlighter());
     }
 
-    /**
-     * Reload internal configuration
-     * @throws IOException
-     */
-    public static void loadInternalConfig() throws IOException {
-        CommandCenter.loadInternalConfig();
+    public SimpleLatexFilter(final boolean useInternalConfig) throws IOException {
+        commandCenter = new CommandCenter(useInternalConfig);
+        parser = new Parser(commandCenter);
     }
 
     public SimpleLatexFilter() throws IOException {
-        commandCenter = new CommandCenter();
+        commandCenter = new CommandCenter(false);
         parser = new Parser(commandCenter);
     }
 
     @Override
     public void processFile(final BufferedReader reader, final BufferedWriter outfile,
                             final FilterContext fc) throws IOException {
-
-        // Read file
-        StringBuilder builder = new StringBuilder();
-        LinebreakPreservingReader lbpr = new LinebreakPreservingReader(reader);
-        String line, br;
-
-        while ((line = lbpr.readLine()) != null) {
-            br = lbpr.getLinebreak();
-            builder.append(line);
-            builder.append(br);
-        }
-
         fileWriter = outfile;
-        sourceDocument = builder.toString();
-
+        sourceDocument = readBufferWithLinebreaks(reader);
         // Clean up document level structures
         resetState();
         // Tokenize document
@@ -156,7 +140,7 @@ public class SimpleLatexFilter extends AbstractFilter {
         List<Token> tagCache = new ArrayList<>();
         Map<String, List<Token>> tagToTokens = new HashMap<>();
 
-        // Append dummy token to avoid excess code
+        // Append dummy token to simplify code
         int endOfSequence = tokens.get(tokens.size() - 1).getEnd();
         tokens.add(Token.getDummyToken(endOfSequence, baseExternality));
 
@@ -226,7 +210,7 @@ public class SimpleLatexFilter extends AbstractFilter {
                 if (m.getExternality() > baseExternality) {
                     extTokens.add(t);  // This token belongs to external context
                 } else {
-                    if (extTokens.size() > 0) {
+                    if (!extTokens.isEmpty()) {
                         tsb.append(translateSegment(extTokens)); // Recursive translation
                         extTokens = new ArrayList<>();
                     }
@@ -290,7 +274,7 @@ public class SimpleLatexFilter extends AbstractFilter {
             }
 
             // Flush translation cache
-            if (translationCache.size() > 0) {
+            if (!translationCache.isEmpty()) {
                 String translation = translateSegment(translationCache);
                 fileWriter.write(translation);
                 translationCache.clear();

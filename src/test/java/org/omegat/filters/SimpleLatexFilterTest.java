@@ -22,7 +22,6 @@
 package org.omegat.filters;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class SimpleLatexFilterTest extends TestFilterBase {
         "Example of <b1>bold</b1> and <e1>emphasis</e1>.",
         "Down the rabbit hole",
         "Example of closed tag <e1/> and <G0>virtual group command</G0>.",
-        "Let's try a footnote with a hyperlink inside<f1/>",
+        "Let's try a footnote with a hyperlink inside<f1/><f0/>",
         "<e1>See:</e1> <h1>Wikipedia</h1>",
         "https://wikipedia.org",
         "We can split <e1>tag pairs between segments.",
@@ -73,18 +72,17 @@ public class SimpleLatexFilterTest extends TestFilterBase {
         "This~is~unescaped",
         "A <ls1>slight</ls1> and <ls2>heavy</ls2> letterspaced text.",
         "See figures <r1/> and <r2/> on page <pr1/>.",
-        "List item text"
+        "List item text",
+        "Test [square brackets] text",
+        "short name",
+        "long name"
     };
 
     String testDocument = "/test.tex";
 
-    public SimpleLatexFilterTest() throws IOException {
-        SimpleLatexFilter.loadInternalConfig(); // Always use internal filter configuration
-    }
-
     @Test
     public void testFilterFeatures() throws Exception {
-        List<String> entries = parse(new SimpleLatexFilter(), testDocument);
+        List<String> entries = parse(new SimpleLatexFilter(true), testDocument);
         for (int i = 0; i < TEST_STRINGS.length; i++) {
             assertEquals(TEST_STRINGS[i], entries.get(i));
         }
@@ -92,10 +90,9 @@ public class SimpleLatexFilterTest extends TestFilterBase {
 
     @Test
     public void testOutputIntegrity() throws Exception {
-        translate(new SimpleLatexFilter(), testDocument, Collections.emptyMap());
+        translate(new SimpleLatexFilter(true), testDocument, Collections.emptyMap());
         compareBinary(new File("src/test/resources" + testDocument), outFile);
     }
-
 
     @Test
     public void testTranslateNew() throws Exception {

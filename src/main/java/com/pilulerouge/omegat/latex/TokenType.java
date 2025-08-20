@@ -31,7 +31,9 @@ public enum TokenType {
     COMMAND,      // Any LaTeX command except begin/end
     GROUP_BEGIN,  // {
     GROUP_END,    // }
-    OPTIONS,      // [foo=bar,boo=moo]
+    OPTION_BEGIN, // [
+    OPTION_END,   // ]
+    // OPTIONS,      // DEPRECATED
     AMPERSAND,    // Column separator in table environments
     INLINE_MATH,  // All flavors of inline math become FORMAT commands without translatable content
     DISPLAY_MATH, // These are copied without translation

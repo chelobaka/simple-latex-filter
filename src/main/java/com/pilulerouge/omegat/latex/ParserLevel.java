@@ -27,85 +27,103 @@ import java.util.LinkedList;
 /**
  * This class describes the state of particular depth level in document parser.
  */
-public class ParserLevel {
+class ParserLevel {
 
-    private boolean optionsConsumer;               // Consume OPTIONS token or treat it as text?
+    private boolean optionConsumer;                // Consume OPTIONS token or treat it as text?
     private boolean argumentConsumer;              // Consume all incoming arguments
     private final boolean translatable;            // How to treat tokens inside this level
     private Command command;                       // Name of current command in this level or null
     private int tagId;                             // Unique tag id for FORMAT command or group.
     private final int externality;                 // Externality level
     private final boolean escape;                  // Escape special sequences in this level
-    private final boolean hidden;                  // Treat level as translatable but hide content from translation
+    private final boolean hidden;                  // Treat level as translatable but hide content from translation.
+                                                   // Used in FORMAT commands without translatable content.
+    private final boolean isOptionValue;           // True, if level is created for optional command/env argument.
+                                                   // Used for detection of an optional argument end.
 
     private LinkedList<CommandArgument> commandArguments; // Defined arguments of current command.
+    private LinkedList<CommandArgument> commandOptions;   // Defined arguments of current command.
 
-    public ParserLevel(final boolean translatable, final int externality, final boolean escape, final boolean hidden) {
+    ParserLevel(final boolean translatable, final int externality, final boolean escape, final boolean hidden,
+                final boolean isOptionValue) {
         this.translatable = translatable;
         this.externality = externality;
         this.escape = escape;
         this.hidden = hidden;
-        this.optionsConsumer = false;
+        this.isOptionValue = isOptionValue;
+        this.optionConsumer = false;
         this.argumentConsumer = false;
         this.command = null;
         this.tagId = 0;
         this.commandArguments = new LinkedList<>();
+        this.commandOptions = new LinkedList<>();
     }
 
-    public void registerCommand(Command command) {
+    void registerCommand(Command command) {
         this.command = command;
         if (command.getType() == CommandType.CONTROL) {
-            optionsConsumer = true;
+            optionConsumer = true;
             argumentConsumer = true;
             commandArguments = new LinkedList<>();
+            commandOptions = new LinkedList<>();
         } else {
-            optionsConsumer = false;
+            optionConsumer = false;
             argumentConsumer = false;
             commandArguments = new LinkedList<>(Arrays.asList(command.getArgs()));
+            commandOptions = new LinkedList<>(Arrays.asList(command.getOptions()));
         }
     }
 
-    public void unregisterCommand() {
+    void unregisterCommand() {
         command = null;
         tagId = 0;
         argumentConsumer = false;
-        optionsConsumer = false;
+        optionConsumer = false;
         commandArguments.clear();
+        commandOptions.clear();
     }
 
-    public boolean hasArgumentsInQueue() {
+    boolean hasArgumentInQueue() {
         return !commandArguments.isEmpty();
     }
 
-    public Command getCommand() {
+    boolean hasOptionInQueue() {
+        return !commandOptions.isEmpty();
+    }
+
+    Command getCommand() {
         return command;
     }
 
-    public boolean hasCommand() {
+    boolean hasCommand() {
         return command != null;
     }
 
-    public boolean isTranslatable() {
+    boolean isOptionValue() {
+        return this.isOptionValue;
+    }
+
+    boolean isTranslatable() {
         return translatable;
     }
 
-    public boolean isOptionsConsumer() {
-        return optionsConsumer;
+    boolean isOptionConsumer() {
+        return optionConsumer;
     }
 
-    public boolean isHidden() {
+    boolean isHidden() {
         return hidden;
     }
 
     /**
      * Used in unusual cases like `figure` environment
-     * @param optionsConsumer switch
+     * @param optionConsumer switch
      */
-    public void setOptionsConsumer(boolean optionsConsumer) {
-        this.optionsConsumer = optionsConsumer;
+    void setOptionConsumer(boolean optionConsumer) {
+        this.optionConsumer = optionConsumer;
     }
 
-    public boolean isArgumentConsumer() {
+    boolean isArgumentConsumer() {
         return argumentConsumer;
     }
 
@@ -113,27 +131,31 @@ public class ParserLevel {
      * Used in unusual cases like `figure` environment
      * @param argumentConsumer switch
      */
-    public void setArgumentConsumer(boolean argumentConsumer) {
+    void setArgumentConsumer(boolean argumentConsumer) {
         this.argumentConsumer = argumentConsumer;
     }
 
-    public int getTagId() {
+    int getTagId() {
         return tagId;
     }
 
-    public void setTagId(int tagId) {
+    void setTagId(int tagId) {
         this.tagId = tagId;
     }
 
-    public int getExternality() {
+    int getExternality() {
         return externality;
     }
 
-    public CommandArgument fetchArgument() {
+    CommandArgument fetchArgument() {
         return commandArguments.removeFirst();
     }
 
-    public boolean doEscape() {
+    CommandArgument fetchOption() {
+        return commandOptions.removeFirst();
+    }
+
+    boolean doEscape() {
         return escape;
     }
 

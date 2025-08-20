@@ -108,11 +108,6 @@ public class Tokenizer {
                 Pattern.compile("(?<!\\\\)\\\\end\\*?\\{([a-z]{2,})}"),
                 TokenType.ENV_END
         );
-        // Command / environment options
-        ORDERED_PATTERN_TOKENS.put(
-                Pattern.compile("(?<!\\\\)\\[.+?]"),
-                TokenType.OPTIONS
-        );
         // Commands
         ORDERED_PATTERN_TOKENS.put(
                 Pattern.compile("(?<!\\\\)\\\\([a-z]{2,})\\*?"),
@@ -126,6 +121,15 @@ public class Tokenizer {
         ORDERED_PATTERN_TOKENS.put(
                 Pattern.compile("(?<!\\\\)}"),
                 TokenType.GROUP_END
+        );
+        // Option boundaries
+        ORDERED_PATTERN_TOKENS.put(
+                Pattern.compile("(?<!\\\\)\\["),
+                TokenType.OPTION_BEGIN
+        );
+        ORDERED_PATTERN_TOKENS.put(
+                Pattern.compile("(?<!\\\\)]"),
+                TokenType.OPTION_END
         );
         // Table column separator
         ORDERED_PATTERN_TOKENS.put(
@@ -145,7 +149,7 @@ public class Tokenizer {
     // Pattern for STN token
     private static final Pattern STN_PATTERN = Pattern.compile("^[\\s\\t\\n]+$");
 
-    static ListIterator<Token> tokenizeDocument(String sourceText) {
+    public static ListIterator<Token> tokenizeDocument(String sourceText) {
         LinkedList<Token> tokens = new LinkedList<>();
         int[] residency = new int[sourceText.length()]; // Tracks token overlap
         Arrays.fill(residency, -1);

@@ -26,12 +26,15 @@ import gen.core.filters.Filters;
 import org.omegat.core.Core;
 import org.omegat.core.data.IProject;
 import org.omegat.filters2.master.FilterMaster;
+import org.omegat.util.LinebreakPreservingReader;
 import org.omegat.util.Log;
 import org.omegat.util.StaticUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
@@ -55,6 +58,20 @@ public final class Util {
     }
 
     static final String FILTER_NAME = RB.getString("FILTER_NAME");
+
+    public static String readBufferWithLinebreaks(BufferedReader reader) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        LinebreakPreservingReader lbpr = new LinebreakPreservingReader(reader);
+        String line, br;
+
+        while ((line = lbpr.readLine()) != null) {
+            br = lbpr.getLinebreak();
+            builder.append(line);
+            builder.append(br);
+        }
+
+        return builder.toString();
+    }
 
     static void logLocalRB(String key, Object... parameters) {
         MessageFormat formatter = new MessageFormat(RB.getString(key));
