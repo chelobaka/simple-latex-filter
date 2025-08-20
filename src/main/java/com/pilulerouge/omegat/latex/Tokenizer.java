@@ -101,11 +101,11 @@ public class Tokenizer {
         );
         // Environment boundaries
         ORDERED_PATTERN_TOKENS.put(
-                Pattern.compile("(?<!\\\\)\\\\begin\\*?\\{([a-z]{2,})}"),
+                Pattern.compile("(?<!\\\\)\\\\begin\\*?\\{([a-zA-Z]{2,})}"),
                 TokenType.ENV_BEGIN
         );
         ORDERED_PATTERN_TOKENS.put(
-                Pattern.compile("(?<!\\\\)\\\\end\\*?\\{([a-z]{2,})}"),
+                Pattern.compile("(?<!\\\\)\\\\end\\*?\\{([a-zA-Z]{2,})}"),
                 TokenType.ENV_END
         );
         // Commands
