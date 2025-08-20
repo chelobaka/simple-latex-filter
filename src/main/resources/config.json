@@ -1,7 +1,7 @@
 {
   "allCommands": [
     {
-      "_comment": "Converted to tags. Verbose listing only. Absent `args` property treated as a single argument {\"translate\": true, \"external\": false}. Commands without arguments should have agrs=[]",
+      "_comment": "Converted to tags. Verbose listing only. Absent `args` property treated as a single argument {\"translate\": true, \"external\": false}. Commands without arguments should have args=[]",
       "type": "FORMAT",
       "commands": [
         {
@@ -43,6 +43,16 @@
           "args": []
         },
         {
+          "name": "index",
+          "tag": "i",
+          "args": [
+            {
+              "translate": true,
+              "external": true,
+              "escape": false
+            }
+          ]
+        },        {
           "name": "LARGE",
           "tag": "sz8",
           "args": []
@@ -61,16 +71,6 @@
           "name": "normalsize",
           "tag": "sz5",
           "args": []
-        },
-        {
-          "name": "pageref",
-          "tag": "pr",
-          "args": [{"translate": false}]
-        },
-        {
-          "name": "ref",
-          "tag": "r",
-          "args": [{"translate": false}]
         },
         {
           "name": "small",
@@ -113,9 +113,19 @@
           "args": []
         },
         {
+          "name": "pageref",
+          "tag": "pr",
+          "args": [{"translate": false}]
+        },
+        {
           "name": "protect",
           "tag": "p0",
           "args": []
+        },
+        {
+          "name": "ref",
+          "tag": "r",
+          "args": [{"translate": false}]
         },
         {
           "name": "textasciitilde",
@@ -167,6 +177,16 @@
               "escape": false
             }
           ]
+        },
+        {
+          "name": "vpageref",
+          "tag": "vpr",
+          "args": [{"translate": false}]
+        },
+        {
+          "name": "vref",
+          "tag": "vr",
+          "args": [{"translate": false}]
         }
       ]
     },
@@ -194,6 +214,11 @@
           "options": [{"translate": true}]
         },
         {
+          "name": "subsubsection",
+          "args": [{"translate": true}],
+          "options": [{"translate": true}]
+        },
+        {
           "name": "addcontentsline",
           "args": [{"translate": false}, {"translate": false}, {"translate": true}]
         },
@@ -216,6 +241,7 @@
         "captionsetup",
         "cleardoublepage",
         "clearpage",
+        "cline",
         "else",
         "endfirsthead",
         "endfoot",
@@ -227,6 +253,7 @@
         "includegraphics",
         "item",
         "label",
+        "linewidth",
         "newcommand",
         "newpage",
         "hline",
@@ -248,7 +275,7 @@
   ],
   "environments": {
     "consumeOptions": ["figure", "table", "longtable", "tabular"],
-    "consumeArguments": ["wrapfigure", "tabular", "tabularx", "longtable"],
-    "table": ["tabular", "tabularx", "longtable"]
+    "consumeArguments": ["wrapfigure", "tabular", "tabularx", "tabulary", "longtable"],
+    "table": ["tabular", "tabularx", "tabulary", "longtable"]
   }
 }
