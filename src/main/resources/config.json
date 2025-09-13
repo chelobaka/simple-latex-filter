@@ -199,6 +199,11 @@
         "cohead",
         "footnotetext",
         {
+          "name": "item",
+          "args": [],
+          "options": [{"translate": true}]
+        },
+        {
           "name": "chapter",
           "args": [{"translate": true}],
           "options": [{"translate": true}]
@@ -251,7 +256,6 @@
         "fi",
         "if",
         "includegraphics",
-        "item",
         "label",
         "linewidth",
         "newcommand",

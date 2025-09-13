@@ -72,7 +72,9 @@ public class SimpleLatexFilterTest extends TestFilterBase {
         "This~is~unescaped",
         "A <ls1>slight</ls1> and <ls2>heavy</ls2> letterspaced text.",
         "See figures <r1/> and <r2/> on page <pr1/>.",
+        "☣️",
         "List item text",
+        "Another list item text",
         "Test [square brackets] text",
         "short name",
         "long name"
