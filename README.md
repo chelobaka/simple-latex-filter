@@ -1,8 +1,9 @@
 # Simple LaTeX filter plugin for OmegaT
 
 ## What is it?
-This plugin implements a subset of LaTeX syntax as OmegaT file filter. Translated content is
-expected to be Unicode encoded.
+This plugin implements a naive LaTeX parser as OmegaT file filter. The parser doesn't execute the code, it might
+fail on documents, relying on conditional execution of some commands like `\begin` or `\end` . Translated documents
+must be Unicode encoded.
 
 Since LaTeX commands are numerous and documents can contain custom commands, it is a good idea
 to describe all unknown commands before starting the translation process. See the [manual](CONFIGURATION.md)
