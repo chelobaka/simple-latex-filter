@@ -19,29 +19,17 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-package com.pilulerouge.omegat.latex;
+package com.chelobaka.omegat;
 
-public class CommandArgument {
+public class SimpleLatexFilterException extends RuntimeException {
 
-    private final boolean translatable;
-    private final boolean external;
-    private final boolean escape;
+    private final String message;
 
-    public CommandArgument(final boolean translatable, final boolean external, final boolean escape) {
-        this.translatable = translatable;
-        this.external = external;
-        this.escape = escape;
+    public SimpleLatexFilterException(String message) {
+        this.message = message;
     }
 
-    public boolean isTranslatable() {
-        return translatable;
-    }
-
-    public boolean isExternal() {
-        return external;
-    }
-
-    public boolean doEscape() {
-        return escape;
+    public String toString() {
+        return message;
     }
 }

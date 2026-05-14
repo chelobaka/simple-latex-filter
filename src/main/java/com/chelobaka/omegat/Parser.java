@@ -19,13 +19,13 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-package com.pilulerouge.omegat.latex;
+package com.chelobaka.omegat;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.pilulerouge.omegat.latex.Command.*;
+import static com.chelobaka.omegat.Command.*;
 
 public class Parser {
 

@@ -19,7 +19,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-package com.pilulerouge.omegat.latex;
+package com.chelobaka.omegat;
 
 
 import java.awt.Window;
@@ -40,10 +40,10 @@ import org.omegat.filters2.FilterContext;
 import org.omegat.filters2.Instance;
 import org.omegat.util.Log;
 
-import static com.pilulerouge.omegat.latex.Command.GROUP_COMMAND_NAME;
-import static com.pilulerouge.omegat.latex.Tokenizer.tokenizeDocument;
-import static com.pilulerouge.omegat.latex.Util.RB;
-import static com.pilulerouge.omegat.latex.Util.readBufferWithLinebreaks;
+import static com.chelobaka.omegat.Command.GROUP_COMMAND_NAME;
+import static com.chelobaka.omegat.Tokenizer.tokenizeDocument;
+import static com.chelobaka.omegat.Util.RB;
+import static com.chelobaka.omegat.Util.readBufferWithLinebreaks;
 
 
 public class SimpleLatexFilter extends AbstractFilter {

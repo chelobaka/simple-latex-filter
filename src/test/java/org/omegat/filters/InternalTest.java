@@ -1,12 +1,12 @@
 package org.omegat.filters;
 
-import com.pilulerouge.omegat.latex.CommandCenter;
-import com.pilulerouge.omegat.latex.Parser;
-import com.pilulerouge.omegat.latex.Token;
+import com.chelobaka.omegat.CommandCenter;
+import com.chelobaka.omegat.Parser;
+import com.chelobaka.omegat.Token;
 import org.junit.jupiter.api.Test;
 
-import static com.pilulerouge.omegat.latex.Tokenizer.tokenizeDocument;
-import static com.pilulerouge.omegat.latex.Util.readBufferWithLinebreaks;
+import static com.chelobaka.omegat.Tokenizer.tokenizeDocument;
+import static com.chelobaka.omegat.Util.readBufferWithLinebreaks;
 import static j2html.TagCreator.*;
 
 import java.io.*;

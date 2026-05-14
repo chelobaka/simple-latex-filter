@@ -19,7 +19,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-package com.pilulerouge.omegat.latex;
+package com.chelobaka.omegat;
 
 import gen.core.filters.Filter;
 import gen.core.filters.Filters;
