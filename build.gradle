@@ -51,7 +51,8 @@ jar {
             "Plugin-Version": pluginVersion,
             "Plugin-Name": pluginName,
             "Plugin-Author": pluginAuthor,
-            "Plugin-Description": pluginDescription
+            "Plugin-Description": pluginDescription,
+            "Plugin-Category": "filter"
         )
     }
 
