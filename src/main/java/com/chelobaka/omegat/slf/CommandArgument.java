@@ -19,17 +19,29 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-package com.chelobaka.omegat;
+package com.chelobaka.omegat.slf;
 
-public class SimpleLatexFilterException extends RuntimeException {
+public class CommandArgument {
 
-    private final String message;
+    private final boolean translatable;
+    private final boolean external;
+    private final boolean escape;
 
-    public SimpleLatexFilterException(String message) {
-        this.message = message;
+    public CommandArgument(final boolean translatable, final boolean external, final boolean escape) {
+        this.translatable = translatable;
+        this.external = external;
+        this.escape = escape;
     }
 
-    public String toString() {
-        return message;
+    public boolean isTranslatable() {
+        return translatable;
+    }
+
+    public boolean isExternal() {
+        return external;
+    }
+
+    public boolean doEscape() {
+        return escape;
     }
 }

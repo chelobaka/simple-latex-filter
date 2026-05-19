@@ -19,7 +19,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-package com.chelobaka.omegat;
+package com.chelobaka.omegat.slf;
 
 
 import org.omegat.util.OStrings;
@@ -44,7 +44,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
-import static com.chelobaka.omegat.Util.RB;
+import static com.chelobaka.omegat.slf.Util.RB;
 
 
 /**

@@ -19,13 +19,13 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-package com.chelobaka.omegat;
+package com.chelobaka.omegat.slf;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.chelobaka.omegat.Command.*;
+import static com.chelobaka.omegat.slf.Command.*;
 
 public class Parser {
 

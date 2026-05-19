@@ -19,7 +19,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-package com.chelobaka.omegat;
+package com.chelobaka.omegat.slf;
 
 import org.omegat.core.Core;
 import org.omegat.gui.editor.IPopupMenuConstructor;
@@ -36,7 +36,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.chelobaka.omegat.Util.RB;
+import static com.chelobaka.omegat.slf.Util.RB;
 
 
 public class PopupMenuConstructor implements IPopupMenuConstructor {

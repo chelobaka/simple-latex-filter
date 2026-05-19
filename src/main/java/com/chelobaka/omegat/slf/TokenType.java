@@ -19,7 +19,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-package com.chelobaka.omegat;
+package com.chelobaka.omegat.slf;
 
 /**
  * Types of tokens recognized in LaTeX document.

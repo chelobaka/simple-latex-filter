@@ -19,43 +19,17 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-package com.chelobaka.omegat;
+package com.chelobaka.omegat.slf;
 
-import java.util.List;
+public class SimpleLatexFilterException extends RuntimeException {
 
-public class ParserMark {
-    private final boolean translatable;
-    private final boolean escape;
-    private final int externality;
-    private final int tagId;
-    private final List<String> environments;
+    private final String message;
 
-    public ParserMark(boolean translatable, int externality, int tagId, boolean escape, List<String> environments) {
-        this.translatable = translatable;
-        this.escape = escape;
-        this.tagId = tagId;
-        this.externality = externality;
-        this.environments = environments;
+    public SimpleLatexFilterException(String message) {
+        this.message = message;
     }
 
-    public boolean isTranslatable() {
-        return translatable;
+    public String toString() {
+        return message;
     }
-
-    public boolean doEscape() {
-        return escape;
-    }
-
-    public int getExternality() {
-        return externality;
-    }
-
-    public int getTagId() {
-        return tagId;
-    }
-
-    public List<String> getEnvironments() {
-        return environments;
-    }
-
 }

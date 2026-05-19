@@ -19,29 +19,10 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-package com.chelobaka.omegat;
+package com.chelobaka.omegat.slf;
 
-public class CommandArgument {
-
-    private final boolean translatable;
-    private final boolean external;
-    private final boolean escape;
-
-    public CommandArgument(final boolean translatable, final boolean external, final boolean escape) {
-        this.translatable = translatable;
-        this.external = external;
-        this.escape = escape;
-    }
-
-    public boolean isTranslatable() {
-        return translatable;
-    }
-
-    public boolean isExternal() {
-        return external;
-    }
-
-    public boolean doEscape() {
-        return escape;
-    }
+public enum CommandType {
+    CONTROL,   // Control commands don't contain any translatable text
+    CONTENT,   // Some arguments contain translatable text not linked to adjacent text
+    FORMAT     // Change text appearance inside larger text
 }

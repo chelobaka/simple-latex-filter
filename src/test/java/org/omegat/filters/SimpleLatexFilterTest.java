@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import com.chelobaka.omegat.SimpleLatexFilter;
+import com.chelobaka.omegat.slf.SimpleLatexFilter;
 
 import static org.junit.jupiter.api.Assertions.*;
 

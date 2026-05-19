@@ -19,7 +19,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-package com.chelobaka.omegat;
+package com.chelobaka.omegat.slf;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,9 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.chelobaka.omegat.SettingsDialog.CONF_LOAD_USER_CONFIG;
-import static com.chelobaka.omegat.Util.getFilterOptions;
-import static com.chelobaka.omegat.Util.logLocalRB;
+import static com.chelobaka.omegat.slf.SettingsDialog.CONF_LOAD_USER_CONFIG;
+import static com.chelobaka.omegat.slf.Util.getFilterOptions;
+import static com.chelobaka.omegat.slf.Util.logLocalRB;
 import static org.omegat.util.StaticUtils.getConfigDir;
 
 /**

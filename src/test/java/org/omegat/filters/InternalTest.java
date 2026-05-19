@@ -1,12 +1,12 @@
 package org.omegat.filters;
 
-import com.chelobaka.omegat.CommandCenter;
-import com.chelobaka.omegat.Parser;
-import com.chelobaka.omegat.Token;
+import com.chelobaka.omegat.slf.CommandCenter;
+import com.chelobaka.omegat.slf.Parser;
+import com.chelobaka.omegat.slf.Token;
 import org.junit.jupiter.api.Test;
 
-import static com.chelobaka.omegat.Tokenizer.tokenizeDocument;
-import static com.chelobaka.omegat.Util.readBufferWithLinebreaks;
+import static com.chelobaka.omegat.slf.Tokenizer.tokenizeDocument;
+import static com.chelobaka.omegat.slf.Util.readBufferWithLinebreaks;
 import static j2html.TagCreator.*;
 
 import java.io.*;
